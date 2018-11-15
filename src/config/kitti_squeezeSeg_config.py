@@ -4,7 +4,7 @@
 
 import numpy as np
 
-from config import base_model_config
+from .config import base_model_config
 
 def kitti_squeezeSeg_config():
   """Specify the parameters to tune below."""
@@ -19,7 +19,7 @@ def kitti_squeezeSeg_config():
                                     [ 0.66,  0.55,  0.71],
                                     [ 0.58,  0.72,  0.88]])
 
-  mc.BATCH_SIZE         = 32
+  mc.BATCH_SIZE         = 16
   mc.AZIMUTH_LEVEL      = 512
   mc.ZENITH_LEVEL       = 64
 

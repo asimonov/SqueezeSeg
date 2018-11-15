@@ -54,7 +54,7 @@ logdir="$LOG_DIR/"
 traindir="$logdir/train/"
 valdir="$logdir/eval_$IMAGE_SET"
 
-python ./src/eval.py \
+python3.6 ./src/eval.py \
   --dataset=KITTI \
   --data_path=./data/ \
   --image_set=$IMAGE_SET \

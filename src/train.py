@@ -32,7 +32,7 @@ tf.app.flags.DEFINE_string('image_set', 'train',
 tf.app.flags.DEFINE_string('train_dir', '/tmp/bichen/logs/squeezeseg/train',
                             """Directory where to write event logs """
                             """and checkpoint.""")
-tf.app.flags.DEFINE_integer('max_steps', 1000000,
+tf.app.flags.DEFINE_integer('max_steps', 2000000,
                             """Maximum number of batches to run.""")
 tf.app.flags.DEFINE_string('net', 'squeezeSeg',
                            """Neural net architecture. """)
@@ -201,7 +201,7 @@ def train():
         if step % FLAGS.checkpoint_step == 0 or step == FLAGS.max_steps-1:
           checkpoint_path = os.path.join(FLAGS.train_dir, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
-    except Exception, e:
+    except Exception as e:
       coord.request_stop(e)
     finally:
       coord.request_stop()
