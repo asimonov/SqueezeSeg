@@ -17,6 +17,8 @@ from six.moves import xrange
 import tensorflow as tf
 import threading
 
+from comet_ml import Experiment
+
 from config import *
 from imdb import kitti
 from utils.util import *
@@ -50,6 +52,8 @@ def train():
       'Currently only support KITTI dataset'
 
   os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.gpu
+
+
 
   with tf.Graph().as_default():
 
@@ -124,9 +128,19 @@ def train():
 
     run_options = tf.RunOptions(timeout_in_ms=60000)
 
+    # Create an experiment with your api key
+    experiment = Experiment(api_key="lISr0JWgyUIsox8HYPC3isnTP",
+                            project_name="squeezeSeg_1080ti", workspace="asimonov")
+    hyper_params = {"learning_rate": mc.LEARNING_RATE, "steps": FLAGS.max_steps, "batch_size": mc.BATCH_SIZE}
+    experiment.log_multiple_params(hyper_params)
+    # some_param = "some value"
+    # experiment.log_parameter("param name", some_param)
+
     try:
       for step in xrange(FLAGS.max_steps):
         start_time = time.time()
+
+        experiment.set_step(step)
 
         if step % FLAGS.summary_step == 0 or step == FLAGS.max_steps-1:
           op_list = [
@@ -137,6 +151,8 @@ def train():
           lidar_per_batch, lidar_mask_per_batch, label_per_batch, \
               _, loss_value, pred_cls, summary_str = sess.run(op_list,
                                                               options=run_options)
+
+          experiment.log_metric("loss", loss_value)
 
           label_image = visualize_seg(label_per_batch[:6, :, :], mc)
           pred_image = visualize_seg(pred_cls[:6, :, :], mc)
